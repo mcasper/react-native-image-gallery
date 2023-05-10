@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, ViewPropTypes } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { createResponder } from './libraries/GestureResponder';
 import TransformableImage from './libraries/TransformableImage';
@@ -14,7 +14,7 @@ export default class Gallery extends PureComponent {
         ...View.propTypes,
         images: PropTypes.arrayOf(PropTypes.object),
         initialPage: PropTypes.number,
-        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
+        scrollViewStyle: PropTypes.any,
         pageMargin: PropTypes.number,
         onPageSelected: PropTypes.func,
         onPageScrollStateChanged: PropTypes.func,
@@ -55,7 +55,7 @@ export default class Gallery extends PureComponent {
         this.activeImageResponder = this.activeImageResponder.bind(this);
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         let onResponderReleaseOrTerminate = (evt, gestureState) => {
             if (this.activeResponder) {
                 if (this.activeResponder === this.viewPagerResponder &&

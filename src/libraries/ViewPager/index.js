@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
     View,
     FlatList,
-    ViewPropTypes,
     InteractionManager,
     Dimensions
 } from 'react-native';
@@ -21,7 +20,7 @@ export default class ViewPager extends PureComponent {
         ...View.propTypes,
         initialPage: PropTypes.number,
         pageMargin: PropTypes.number,
-        scrollViewStyle: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
+        scrollViewStyle: PropTypes.any,
         scrollEnabled: PropTypes.bool,
         renderPage: PropTypes.func,
         pageDataArray: PropTypes.array,
@@ -87,7 +86,7 @@ export default class ViewPager extends PureComponent {
         });
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         this.gestureResponder = createResponder({
             onStartShouldSetResponder: (evt, gestureState) => true,
             onResponderGrant: this.onResponderGrant,
@@ -108,7 +107,7 @@ export default class ViewPager extends PureComponent {
 
         const finalX = this.getScrollOffsetOfPage(page);
         this.scroller.startScroll(this.scroller.getCurrX(), 0, finalX - this.scroller.getCurrX(), 0, 0);
-        
+
         requestAnimationFrame(() => {
             // this is here to work around a bug in FlatList, as discussed here
             // https://github.com/facebook/react-native/issues/1831
@@ -260,7 +259,7 @@ export default class ViewPager extends PureComponent {
     }
 
     keyExtractor (item, index) {
-        return index;
+        return index.toString();
     }
 
     renderRow ({ item, index }) {
@@ -316,7 +315,6 @@ export default class ViewPager extends PureComponent {
               style={[style, { flex: 1 }]}
               {...gestureResponder}>
                 <FlatList
-                  {...this.props.flatListProps}
                   style={[{ flex: 1 }, scrollViewStyle]}
                   ref={'innerFlatList'}
                   keyExtractor={this.keyExtractor}
@@ -331,6 +329,7 @@ export default class ViewPager extends PureComponent {
                   // https://github.com/facebook/react-native/issues/15734#issuecomment-330616697 and
                   // https://github.com/facebook/react-native/issues/14945#issuecomment-354651271
                   contentOffset = {{x: this.getScrollOffsetOfPage(parseInt(this.props.initialPage)), y:0}}
+                  {...this.props.flatListProps}
               />
             </View>
         );

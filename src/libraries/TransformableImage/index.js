@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Image, ViewPropTypes } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import ViewTransformer from '../ViewTransformer';
 
@@ -12,7 +12,7 @@ export default class TransformableImage extends PureComponent {
             ]).isRequired,
             dimensions: PropTypes.shape({ width: PropTypes.number, height: PropTypes.number })
         }).isRequired,
-        style: ViewPropTypes ? ViewPropTypes.style : View.propTypes.style,
+        style: PropTypes.any,
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
         enableTransform: PropTypes.bool,
@@ -51,7 +51,7 @@ export default class TransformableImage extends PureComponent {
         };
     }
 
-    componentWillMount () {
+    UNSAFE_componentWillMount () {
         if (!this.state.imageDimensions) {
             this.getImageSize(this.props.image);
         }
@@ -61,7 +61,7 @@ export default class TransformableImage extends PureComponent {
         this._mounted = true;
     }
 
-    componentWillReceiveProps (nextProps) {
+    UNSAFE_componentWillReceiveProps (nextProps) {
         if (!sameImage(this.props.image, nextProps.image)) {
             // image source changed, clear last image's imageDimensions info if any
             this.setState({ imageDimensions: nextProps.image.dimensions, keyAcumulator: this.state.keyAcumulator + 1 });
